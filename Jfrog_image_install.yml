@@ -1,0 +1,42 @@
+---
+# Playbook to install JFrog Artifactory Docker Image
+- hosts: all
+  become: yes
+  tasks:
+    - name: Pull the latest docker image of jFrog  Artifactory
+      shell: docker pull docker.bintray.io/jfrog/artifactory-oss:latest
+
+    - name: pull docker CE edition
+      shell: docker pull docker.bintray.io/jfrog/artifactory-cpp-ce
+
+    - name: confirm Docker images
+      shell: docker images
+
+    - name: Create Data Directory
+      file: name=/jfrog/artifactory state=directory recurse=yes
+
+    - name: modify the owner
+      shell: chown -R 1030 /jfrog
+
+    - name: Start JFrog Artifactory container
+      shell: docker run --name artifactory -d -p 8081:8081 -v /jfrog/artifactory:/var/opt/jfrog/artifactory
+
+    - name: pass java system properties to the JVM running Artifactory using EXTRA_JAVA_OPTIONS
+      shell: docker run --name artifactory -d -p 8081:8081 -v /jfrog/artifactory:/var/opt/jfrog/artifactory -e EXTRA_JAVA_OPTIONS='-Xms512m -Xmx2g -Xss256k -XX:+UseG1GC'
+
+  #  - name: create Artifactory service unit file
+  #    file:
+  #      name: /etc/systemd/system/artifactory.service
+        state: touch
+
+    - name: deployed artifactory service unit file
+      copy:
+        src: artifactory.service
+        dest: /etc/systemd/system/artifactory.service
+
+    - name: reload systemd deamon and start Artifactory container with systemd
+      systemd:
+        state: started
+        daemon_reload: yes
+        name: artifactory
+        enabled: yes

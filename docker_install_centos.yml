@@ -1,0 +1,50 @@
+---
+# Playbook to install docker on centos OS
+- hosts: all
+  become: yes
+  tasks:
+    - name: uninstall all previous version
+      yum:
+        name: "{{item}}"
+        state: absent
+      with_items:
+        - docker
+        - docker-common
+        - docker-selinux
+        - docker-engine
+
+    - name: install all prerequis package
+      yum:
+        name: "{{item}}"
+        state: present
+      with_items:
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+
+    - name: configure docker repos
+      yum_repository:
+        name: docker
+        description: docker YUM repo
+        baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+        gpgcheck: no
+        enable: yes
+
+    - name: install docker package
+      yum:
+        name: "{{item}}"
+        state: present
+      with_items:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+
+    - name: clean up dependency error
+      shell: yum install -y --setopt=obsoletes=0 docker-ce docker-ce-selinux
+
+    - name: start and enable docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+  
