@@ -1,6 +1,6 @@
 ---
 # Playbook to install JFrog Artifactory Docker Image
-- hosts: all
+- hosts: "{{hosts_inventory}}"
   become: yes
   tasks:
     - name: Pull the latest docker image of jFrog  Artifactory

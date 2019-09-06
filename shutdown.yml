@@ -1,0 +1,10 @@
+---
+- hosts: 
+    - bary783c
+    - bary786c
+  become: yes
+  tasks:
+    - name: stop httpd service on both node3 and node6
+      service:
+        name: httpd
+        state: stopped

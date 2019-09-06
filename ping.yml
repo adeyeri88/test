@@ -1,0 +1,17 @@
+---
+- hosts: "{{hosts_inventory}}"
+  become: yes
+  tasks:
+    - name: creates tag1.html in node 3 and 5
+      copy:
+        content: "I am tag1"
+        dest: /var/www/html/tag7.html
+      tags: tag1
+      when: ansible_hostname in ['bary783c','bary785c']
+
+    - name: creates tag2.html in node 4 and 6
+      copy:
+        content: "I am tag2"
+        dest: /var/www/html/tag6.html
+      tags: tag2
+      when: ansible_hostname in ['bary784c','bary786c']

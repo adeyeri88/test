@@ -1,0 +1,39 @@
+---
+- hosts: "{{hosts_inventory}}"
+  become: yes
+  roles:
+    - examfun
+  tasks:
+    - name: create all group users
+      group:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - "{{ user_groups }}"
+    #    - staff
+    #    - faculty
+    #    - students
+    #    - guests
+
+    - name: create users in staff variable in exam fun role and make them members of groups staff and students
+      user:
+        name: "{{item}}"
+        groups: staff,students
+        state: present
+      with_items:
+        - "{{staff}}"
+
+    - name: create users in students variable in exam fun role and make them members of groups guests and students
+      user:
+        name: "{{item}}"
+        groups: staff,students
+        state: present
+      with_items:
+        - "{{students}}"
+
+    - name: delete users in faculty variable in examfun role
+      user:
+        name: "{{item}}"
+        state: absent
+      with_items:
+        - "{{faculty}}"

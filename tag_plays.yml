@@ -1,0 +1,17 @@
+---
+- hosts: "{{hosts_inventory}}"
+  become: yes
+  tasks:
+    - name: create a tarbal for production group hosts
+      archive:
+        path: /var/www/html
+        dest: /var/tmp/production.tar.gz
+        format: gz
+      when: ansible_hostname in groups ['production']
+
+    - name: create a tarbal for backup group hosts
+      archive:
+        path: /var/log/httpd
+        dest: /var/tmp/backup2.tar.gz
+        format: gz
+      when: ansible_hostname in groups.backup

@@ -1,0 +1,36 @@
+---
+- hosts: "{{hosts_inventory}}"
+  become: yes
+  tasks:
+    - name: install ex407-server package
+      yum:
+        state: latest
+        name: iscsi-initiator-utils
+      register: ioutput
+
+    - debug:
+        var: ioutput
+
+    - name: start the ex407-server service
+      service:
+        state: started
+        name: iscsid
+      register: soutput
+
+    - debug:
+        var: soutput
+
+    - name: provide this  message if installatin fails
+      debug:
+        msg: "Install failed"
+      when: ioutput.failed == true
+
+    - name: provide this output if service fails
+      debug:
+        msg: "service start failed"
+      when: soutput.failed == true
+
+    - name: provide this output if both install and service fails
+      debug:
+        msg: "playbook failed"
+      when: ioutput.failed == true and soutput.failed == true

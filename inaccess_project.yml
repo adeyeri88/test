@@ -1,0 +1,16 @@
+---
+- hosts: "{{hosts_inventory}}"
+  become: yes
+  tasks:
+    - block:
+        - name: copy the access.html is url is accessible
+          get_url:
+            #url: https://github.com/mdklatt/ansible-tmpdir-role/archive/v0.1.0.tar.gz
+            url: http://classroom.example.com/content/access.html
+            dest: /var/www/html
+
+      rescue:
+        - name: if no access, then create a file noaccess.html
+          copy:
+            content: "I have no access"
+            dest: /var/www/html/noaccess3.html

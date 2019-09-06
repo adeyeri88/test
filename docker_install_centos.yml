@@ -1,6 +1,6 @@
 ---
 # Playbook to install docker on centos OS
-- hosts: all
+- hosts: "{{hosts_inventory}}"
   become: yes
   tasks:
     - name: uninstall all previous version

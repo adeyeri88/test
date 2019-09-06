@@ -1,0 +1,39 @@
+---
+- hosts: "{{hosts_inventory}}"
+  become: yes
+  tasks:
+    - name: creates a private directory
+      file:
+        name: /var/www/html/private
+        state: directory
+
+    - name: copy a file htaccess-custome using a link
+      get_url:
+        url: http://classroom.example.com/content/htaccess-custom
+        des: /var/www/html/private/.htaccess
+        owner: apache
+      ignore_errors: yes
+
+    - name: copy a file htpasswd unsing link
+      get_url:
+        url: http://classroom.example.com/content/htpasswd
+        des: /var/www/html/private/.htpasswd
+        owner: apache
+      ignore_errors: yes
+
+    - name: replace all instances
+      replace:
+        regexp: "AllowOverride none"
+        replace: "Allowoverride AuthConfig"
+        path: /etc/httpd/conf/httpd.conf
+
+    - name: create index.html for private directory
+      lineinfile:
+        line: "This node {{ansible_hostname}} is protected"
+        dest: /var/www/html/private/index.html
+        create: yes
+
+    - name: restart httpd service
+      service:
+        name: httpd
+        state: restarted

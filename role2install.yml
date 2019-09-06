@@ -1,0 +1,4 @@
+---
+#- src: http://classroom.example.com/content/examfun.tar.gz
+- src: https://github.com/lanycrost/ansible-role-user/archive/master.tar.gz
+  name: rolefun

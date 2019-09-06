@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: "{{hosts_inventory}}"
   become: yes
   tasks:
     - name: 

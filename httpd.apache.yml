@@ -1,0 +1,25 @@
+---
+- hosts: "{{hosts_inventory}}"
+  become: yes
+  tasks: 
+    - name: install httpd service
+      yum:
+        name: httpd
+        state: latest
+
+    - name: copy the configuration file using get_url
+      get_url:
+        url: http://classroom.example.com/content/httpd.conf
+        dest: /etc/httpd/conf/httpd.conf
+
+    - name: update index.html file using lineinfile module
+      lineinfile:
+        line: "Hello from {{ansible_hostname}}"
+        path: /var/www/html/index.html
+        create: yes
+
+    - name: start httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: yes

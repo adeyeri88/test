@@ -1,0 +1,19 @@
+---
+- hosts: "{{hosts_inventory}}"
+  become: yes
+  vars_files:
+    - encrypt.yml
+  tasks:
+    - name: install unarchive package
+      yum:
+        name: unzip
+        state: latest
+
+    - name: download the vault.zip file
+      get_url:
+        usr: http://classroom.exampl.com/content/vault.zip
+        dest: /opt/vault.zip
+      ignore_errors: yes
+
+    - name: unzip the file to /var/www/html
+      command: unzip -o -P "{{password}}" /opt/vault.zip -d /var/www/html

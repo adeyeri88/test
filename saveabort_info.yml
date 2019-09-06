@@ -1,0 +1,19 @@
+---
+- hosts: "{{hosts_inventory}}"
+  become: yes
+  tasks:
+    - name: check the status of saveabort.txt file
+      stat:
+        path: /etc/saveabort.txt
+      register: status
+
+    - name: display stat info
+      debug:
+        var: status
+
+    - name: create a file saveabort.txt with content
+      lineinfile:
+        line: "I am there"
+        path: /etc/saveabort.txt
+        create: yes
+      when: status.stat.exists == false
