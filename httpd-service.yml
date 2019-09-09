@@ -8,16 +8,16 @@
       service:
         name: httpd
         state: started
-        action: start
+      when_action: start
 
     - name: restart httpd service
       service:
         name: httpd
         state: restarted
-        action: restart
+      when_action: restart
 
     - name: stop httpd service 
       service:
         name: httpd
         state: stopped
-        action: stop
+      when_action: stop
