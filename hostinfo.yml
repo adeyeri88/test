@@ -5,5 +5,5 @@
     - name: store the systen information in /root/hostinfo.txt
       lineinfile:
         line: "{{ansible_hostname}} {{ansible_processor_count}} {{ansible_default_ipv4.address}} {{ansible_default_ipv4.macaddress}}"
-        path: /root/hostinfo.txt
+        path: /root/hostinfo3.txt
         create: yes
