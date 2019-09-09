@@ -1,0 +1,21 @@
+---
+- hosts: "{{hosts_inventory}}"
+  become: yes
+  tasks:
+    - name: start httpd service
+      service:
+        name: httpd
+        state: started
+      action: start
+
+    - name: restart httpd service
+      service:
+        name: httpd
+        state: restarted
+      action: restart
+
+    - name: stop httpd service 
+      service:
+        name: httpd
+        state: stopped
+      action: stop
