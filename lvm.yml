@@ -5,7 +5,7 @@
         - name: dbvg volume group creation
           lvg:
                vg: dbvg
-               pvs: /dev/nvmne1n1
+               pvs: /dev/nvme1n1
 
         - name: db00 lvm creation
           lvol:
