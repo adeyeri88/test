@@ -1,6 +1,8 @@
 ---
 - hosts: "{{hosts_inventory}}"
   become: yes
+  vars:
+    - action: "{{action}}"
   tasks:
     - name: start httpd service
       service:
