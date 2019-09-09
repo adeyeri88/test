@@ -2,22 +2,22 @@
 - hosts: "{{hosts_inventory}}"
   become: yes
   vars:
-    action: "{{action}}"
+    action: "{{apache}}"
   tasks:
     - name: start httpd service
       service:
         name: httpd
         state: started
-        action: start
+        apache: start
 
     - name: restart httpd service
       service:
         name: httpd
         state: restarted
-        action: restart
+        apache: restart
 
     - name: stop httpd service 
       service:
         name: httpd
         state: stopped
-        action: stop
+        apache: stop
