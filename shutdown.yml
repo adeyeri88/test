@@ -1,7 +1,5 @@
 ---
-- hosts: 
-    - bary783c.mylabserver.com
-    - bary786c.mylabserver.com
+- hosts: "{{hosts_inventory}}"
   become: yes
   tasks:
     - name: stop httpd service on both node3 and node6
