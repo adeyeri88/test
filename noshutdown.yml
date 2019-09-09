@@ -1,5 +1,5 @@
 ---
-- hosts: "{{hosts_inventory}}"
+- hosts: "{{ hosts_inventory }}"
   become: yes
   tasks:
     - name: start httpd service on all hosts
