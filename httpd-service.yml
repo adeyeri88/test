@@ -8,16 +8,16 @@
       service:
         name: httpd
         state: started
-        apache: start
+      when: apache == 'start'
 
     - name: restart httpd service
       service:
         name: httpd
         state: restarted
-        apache: restart
+      when: apache == 'restart'
 
     - name: stop httpd service 
       service:
         name: httpd
         state: stopped
-        apache: stop
+      when: apache == 'stop'
