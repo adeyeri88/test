@@ -4,19 +4,45 @@
   gather_facts: true
   
   tasks:
-    - name: Install policycoreutils-python package
+    - name: "Check if Firewlld is installed"
+      package_facts:
+        manage: "auto"
+      register: output
+        
+    - name: Firewalld test result
+      debug:
+        msg: "Firewalld found"
+      when: "'firewalld' in ansible_facts.packages"
+      register: result
+      
+    - name: Firewalld test result
+      debug:
+        msg: "Firewalld NOT found"
+      when: "'nginx' not in ansible_facts.packages"
+      
+    - name: install firewalld package
       yum:
-        name: policycoreutils-python
+        name: firewalld
         state: latest
-
-    - name: Selinux and firewall setting
-      shell: setsebool -P httpd_can_network_connect 1
-
+      when: result is skipped
+      register: wahoo
+      
+    - name: start firewallde service
+      service:
+        name: firewalld
+        state: latest
+        enabled: yes
+      when: wahoo is succeeded
+      #when: result is skipped
+      
     - name: enable httpd service on firewall
       firewalld:
-        service: http
+        service: "{{ item }}"
         permanent: yes
         state: enabled
+      with_items:
+        - http
+        - https
 
     - name: reload firewall 
       shell: firewall-cmd --reload
@@ -29,11 +55,96 @@
         - memcached
         - ansible
         - epel-release
-
+        - rabbitmq-server
+        - wget
+        - nginx
+        
+    - name: eanble postgreSQL repo
+      shell: yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm -y
+      
+    - name: install postgreSQL pckage
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - postgresql10 
+        - postgresql10-server 
+        - postgresql10-contrib 
+        - postgresql10-libs
+        
+    - name: Adding AWX repo
+      shell: wget -O /etc/yum.repos.d/awx-rpm.repo https://copr.fedorainfracloud.org/coprs/mrmeee/awx/repo/epel-7/mrmeee-awx-epel-7.repo
+      
+    - name: Installing Ansible AWX
+      yum:
+        name: awx
+        state: latest
+        
+    - name: Initializing the database
+      shell: /usr/pgsql-10/bin/postgresql-10-setup initdb
+      
+    - name: start and enable postgreSQL service
+      service:
+        name: postgresql-10.service
+        state: started
+        enabled: yes
+      
     - name: start memcached service
       service:
         name: memcached
         state: started
         enabled: yes
         
-    - name: Install PostgreSQL server
+    - name: Starting the Rabbitmq Service
+      service:
+        name: rabbitmq-server
+        state: started
+        enabled: yes
+        
+    - name: Creating Postgres user
+      shell: sudo -u postgres createuser -S awx
+      ignore_errors: true
+      
+    - name: Creating the database
+      shell: sudo -u postgres createdb -O awx awx
+      ignore-errors: true
+      
+    - name: Importing the data into Database
+      shell: sudo -u awx /opt/awx/bin/awx-manage migrate
+      
+    - name: initialise the configuration for AWX
+      shell: echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | sudo -u awx /opt/awx/bin/awx-manage shell
+      
+    - name: continue initializing
+      shell: sudo -u awx /opt/awx/bin/awx-manage create_preload_data
+      
+    - name: coninue initializing 2
+      shell: sudo -u awx /opt/awx/bin/awx-manage provision_instance --hostname=$(hostname)
+      
+    - name: continue initializing 3
+      shell: sudo -u awx /opt/awx/bin/awx-manage register_queue --queuename=tower --hostnames=$(hostname)
+      
+    - name: configure nginx
+      get_url:
+        url: https://raw.githubusercontent.com/sunilsankar/awx-build/master/nginx.conf
+        dest: /etc/nginx/nginx.conf
+        backup: yes
+        
+    - name: start nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+        
+    - name: start and enabled awx service
+      serevice:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      with_items:
+        - awx-cbreceiver
+        - awx-celery-beat
+        - awx-celery-worker
+        - awx-channels-worker
+        - awx-daphne
+        - awx-web
