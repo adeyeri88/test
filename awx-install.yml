@@ -2,5 +2,36 @@
 - hosts: "{{hosts_inventory}}"
   become: yes
   gather_facts: true
-  roles:
-    - role: ansible.awx
+  
+  tasks:
+    - name: Install policycoreutils-python package
+      yum:
+        name: policycoreutils-python
+        state: latest
+
+    - name: Selinux and firewall setting
+      shell: setsebool -P httpd_can_network_connect 1
+
+    - name: enable httpd service on firewall
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+
+    - name: reload firewall 
+      shell: firewall-cmd --reload
+
+    - name: memcached, ansible and necessary package installation
+      yum: 
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - memcached
+        - ansible
+        - epel-release
+
+    - name: start memcached service
+      service:
+        name: memcached
+        state: started
+        enabled: yes
