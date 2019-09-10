@@ -6,7 +6,7 @@
   tasks:
     - name: "Check if Firewlld is installed"
       package_facts:
-        manage: "auto"
+        manager: "auto"
       register: output
         
     - name: Firewalld test result
@@ -18,7 +18,7 @@
     - name: Firewalld test result
       debug:
         msg: "Firewalld NOT found"
-      when: "'nginx' not in ansible_facts.packages"
+      when: "'firewalld' not in ansible_facts.packages"
       
     - name: install firewalld package
       yum:
