@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: "{{hosts_inventory}}"
 
   vars:
     nodejs_version: "6.x"

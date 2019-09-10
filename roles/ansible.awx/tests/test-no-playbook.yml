@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: "{{hosts_inventory}}"
 
   vars:
     awx_run_install_playbook: no
