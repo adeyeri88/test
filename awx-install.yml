@@ -1,5 +1,4 @@
 ---
-- name: playbook to install ansible awx
 - hosts: "{{hosts_inventory}}"
   become: yes
   gather_facts: true
