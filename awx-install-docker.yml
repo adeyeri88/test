@@ -59,7 +59,7 @@
         - wget
         - nginx
         
-    - name: eanble postgreSQL repo
+    - name: enable postgreSQL repo
       shell: yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm -y
       
     - name: install postgreSQL pckage
@@ -72,9 +72,17 @@
         - postgresql10-contrib 
         - postgresql10-libs
         
-    - name: Adding AWX repo
-      shell: wget -O /etc/yum.repos.d/awx-rpm.repo https://copr.fedorainfracloud.org/coprs/mrmeee/awx/repo/epel-7/mrmeee-awx-epel-7.repo
-      
+#    - name: Adding AWX repo
+#      shell: wget -O /etc/yum.repos.d/awx-rpm.repo https://copr.fedorainfracloud.org/coprs/mrmeee/awx/repo/epel-7/mrmeee-awx-epel-7.repo
+
+    - name: adding awx repo
+      yum_repository:
+        name: awx-rpm.repo
+        description: AWX YUM repo
+        baseurl: https://copr.fedorainfracloud.org/coprs/mrmeee/awx/repo/epel-7/mrmeee-awx-epel-7.repo
+        gpgcheck: no
+        enabled: yes  
+
     - name: Installing Ansible AWX
       yum:
         name: awx
