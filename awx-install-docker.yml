@@ -59,8 +59,16 @@
         - wget
         - nginx
         
-    - name: enable postgreSQL repo
-      shell: yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm
+#    - name: enable postgreSQL repo
+#      shell: yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm
+
+    - name: adding postgreSQL repo
+      yum_repository:
+        name: pgdg-redhat-all.repo
+        description: PGDG YUM repo
+        baseurl: https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm
+#        gpgcheck: no
+#        enabled: yes
       
     - name: install postgreSQL pckage
       yum:
