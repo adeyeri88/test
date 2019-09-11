@@ -107,7 +107,7 @@
       
     - name: Creating the database
       shell: sudo -u postgres createdb -O awx awx
-      ignore-errors: true
+      ignore_errors: true
       
     - name: Importing the data into Database
       shell: sudo -u awx /opt/awx/bin/awx-manage migrate
