@@ -137,7 +137,7 @@
         enabled: yes
         
     - name: start and enabled awx service
-      serevice:
+      service:
         name: "{{ item }}"
         state: started
         enabled: yes
