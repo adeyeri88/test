@@ -60,7 +60,7 @@
         - nginx
         
     - name: enable postgreSQL repo
-      shell: yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm -y
+      shell: yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm
       
     - name: install postgreSQL pckage
       yum:
