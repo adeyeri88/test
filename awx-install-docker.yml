@@ -30,7 +30,7 @@
     - name: start firewallde service
       service:
         name: firewalld
-        state: latest
+        state: started
         enabled: yes
       when: wahoo is succeeded
       #when: result is skipped
