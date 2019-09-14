@@ -30,7 +30,7 @@
     - name: start firewallde service
       service:
         name: firewalld
-        state: latest
+        state: started
         enabled: yes
       when: wahoo is succeeded
       #when: result is skipped
@@ -59,8 +59,16 @@
         - wget
         - nginx
         
-    - name: eanble postgreSQL repo
-      shell: yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm -y
+#    - name: enable postgreSQL repo
+#      shell: yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm
+
+    - name: adding postgreSQL repo
+      yum_repository:
+        name: pgdg-redhat-all.repo
+        description: PGDG YUM repo
+        baseurl: https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm
+#        gpgcheck: no
+#        enabled: yes
       
     - name: install postgreSQL pckage
       yum:
@@ -72,9 +80,17 @@
         - postgresql10-contrib 
         - postgresql10-libs
         
-    - name: Adding AWX repo
-      shell: wget -O /etc/yum.repos.d/awx-rpm.repo https://copr.fedorainfracloud.org/coprs/mrmeee/awx/repo/epel-7/mrmeee-awx-epel-7.repo
-      
+#    - name: Adding AWX repo
+#      shell: wget -O /etc/yum.repos.d/awx-rpm.repo https://copr.fedorainfracloud.org/coprs/mrmeee/awx/repo/epel-7/mrmeee-awx-epel-7.repo
+
+    - name: adding awx repo
+      yum_repository:
+        name: awx-rpm.repo
+        description: AWX YUM repo
+        baseurl: https://copr.fedorainfracloud.org/coprs/mrmeee/awx/repo/epel-7/mrmeee-awx-epel-7.repo
+        gpgcheck: no
+        enabled: yes  
+
     - name: Installing Ansible AWX
       yum:
         name: awx
@@ -107,7 +123,7 @@
       
     - name: Creating the database
       shell: sudo -u postgres createdb -O awx awx
-      ignore-errors: true
+      ignore_errors: true
       
     - name: Importing the data into Database
       shell: sudo -u awx /opt/awx/bin/awx-manage migrate
@@ -137,7 +153,7 @@
         enabled: yes
         
     - name: start and enabled awx service
-      serevice:
+      service:
         name: "{{ item }}"
         state: started
         enabled: yes
