@@ -1,15 +1,15 @@
 ---
 - web:
-    site1:
-        - bary782c.mylabserver.com
-        - bary783c.mylabserver.com
-    site2:
-        - bary784c.mylabserver.com
-        - bary785c.mylabserver.com
+      site1:
+          - bary782c.mylabserver.com
+          - bary783c.mylabserver.com
+      site2:
+          - bary784c.mylabserver.com
+          - bary785c.mylabserver.com
 - db:
-    site1:
-        - bary781c.mylabserver.com
-        - bary782c.mylabserver.com
-    site2:
-        - bary785c.mylabserver.com
-        - bary786c.mylabserver.com
+      site1:
+          - bary781c.mylabserver.com
+          - bary782c.mylabserver.com
+      site2:
+          - bary785c.mylabserver.com
+          - bary786c.mylabserver.com
