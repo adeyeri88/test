@@ -1,0 +1,46 @@
+---
+- hosts: "{{hosts_inventory}}"
+  become: yes
+  tasks:
+    - name: create /app directory
+      file:
+        name: /app
+        state: directory
+     
+    - name: download the Binaries
+      get_url:
+        url: http://mirror.cogentco.com/pub/apache/kafka/2.2.0/kafka_2.12-2.2.0.tgz
+        dest: /app
+      
+    - name: unarchive the file
+      shell: tar -xvf /app/kafka_2.12-2.2.0.tgz
+      
+    - name: create kafka symbolink link
+      shell: ln -s ln -s /app/kafka_2.12-2.2.0 kafka
+      
+    - name: install latest openjdk java
+      yum:
+        name: java-1.8.0-openjdk.x86_64
+        state: latest
+        
+    - name: disable swap memory
+      shell: swapoff -a
+      
+    - name: make swapp disable permanen
+      shell: sed -i '/ swap / s/^/#/' /etc/fstab
+    
+    - name: deploy the zookeeper service file
+      copy:
+        src: files/zookeeper
+        dest: /etc/init.d/zookeeper
+        mode: 0777
+        owner: root
+        group: root
+        
+    - name: relaod the init.d deamon
+      shell: systemctl daemon-reload
+      
+    - name: start the zookeepr service
+      service:
+        name: zookeeper
+        state: started
