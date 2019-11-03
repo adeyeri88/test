@@ -4,36 +4,45 @@
   tasks:
     - name: create /app directory
       file:
-        name: /app
+        name:
+          - /app
+          - /app/platform
         state: directory
+        mode: 0775
+        owner: root
+        group: root
      
     - name: download the Binaries
       get_url:
         url: http://mirror.cogentco.com/pub/apache/kafka/2.2.0/kafka_2.12-2.2.0.tgz
-        dest: /app
+        dest: /app/platform
       
     - name: unarchive the file
-      shell: tar -xvf /app/kafka_2.12-2.2.0.tgz
+      shell: tar -xvf /app/platform/kafka_2.12-2.2.0.tgz
       
     - name: create kafka symbolink link
-      shell: ln -s ln -s /app/kafka_2.12-2.2.0 kafka
+      file: 
+        src: /app/platform/kafka_2.12-2.2.0 kafka
+        dest: /app/platform/kafka
       
     - name: install latest openjdk java
       yum:
         name: java-1.8.0-openjdk.x86_64
         state: latest
-        
-    - name: disable swap memory
-      shell: swapoff -a
-      
-    - name: make swapp disable permanen
-      shell: sed -i '/ swap / s/^/#/' /etc/fstab
     
     - name: deploy the zookeeper service file
       copy:
         src: files/zookeeper
         dest: /etc/init.d/zookeeper
-        mode: 0777
+        mode: 0755
+        owner: root
+        group: root
+
+    - name: deploy the kafka service
+      copy:
+        src: files/kafka
+        dest: /etc/init.d/kafka
+        mode: 0755
         owner: root
         group: root
         

@@ -2,7 +2,7 @@
 - hosts: "{{hosts_inventory}}"
   become: yes
   tasks:
-    - name: install ex407-server package
+    - name: install iscsi package
       yum:
         state: latest
         name: iscsi-initiator-utils
@@ -11,7 +11,7 @@
     - debug:
         var: ioutput
 
-    - name: start the ex407-server service
+    - name: start the iscsi service
       service:
         state: started
         name: iscsid

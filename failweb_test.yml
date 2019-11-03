@@ -2,20 +2,20 @@
 - hosts: "{{hosts_inventory}}"
   become: yes
   tasks:
-    - name: install ex407-server package
+    - name: install ex900-server package
       yum:
         state: latest
-        name: ex407-server
+        name: ex900-server
       register: ioutput
       ignore_errors: yes
 
     - debug:
         var: ioutput
 
-    - name: start the ex407-server service
+    - name: start the ex900-server service
       service:
         state: started
-        name: ex407-server
+        name: ex900-server
       register: soutput
       ignore_errors: yes
 
