@@ -2,5 +2,5 @@
 - hosts: "{{hosts_inventory}}"
   become: yes
   tasks:
-    - name: 
+    - name: create user
   
